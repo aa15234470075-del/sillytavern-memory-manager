@@ -1,0 +1,13 @@
+{
+  "display_name": "酒馆记忆管理器",
+  "version": "0.5.2",
+  "loading_order": 120,
+  "js": "index.js",
+  "css": "style.css",
+  "author": "local",
+  "homePage": "https://github.com/baobao449/sillytavern-memory-manager",
+  "auto_update": false,
+  "requires": [],
+  "optional": [],
+  "dependencies": []
+}

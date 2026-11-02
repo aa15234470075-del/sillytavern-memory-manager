@@ -1,0 +1,7 @@
+node_modules/
+reference/
+backups/
+*.local.*
+.env*
+output/
+任务清单与验收.md
