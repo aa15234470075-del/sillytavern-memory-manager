@@ -1,6 +1,6 @@
 export function floorLabel(floors=[]){
  const a=[...new Set(floors)].sort((a,b)=>a-b),parts=[];
- for(let i=0;i<a.length;i++){let end=a[i],start=end;while(a[i+1]===end+1)end=a[++i];parts.push(start===end?String(start):start+'—'+end);}
+ for(let i=0;i<a.length;i++){let end=a[i],start=end;while(a[i+1]===end+1)end=a[++i];parts.push(start===end?String(start):start+'-'+end);}
  return parts.length?'第'+parts.join('、')+'楼':'用户手动';
 }
 export function hideFloors(floors,keep){const a=[...new Set(floors)].sort((a,b)=>a-b);return a.slice(0,Math.max(0,a.length-Math.max(0,Number(keep)||0)));}

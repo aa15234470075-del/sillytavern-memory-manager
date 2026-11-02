@@ -9,13 +9,13 @@ export function panelBounds(viewport,settings={},position=null){
  const x=viewport.left||0,y=viewport.top||0;
  return {width,height,left:clamp(position?.left??x+(vw-width)/2,x+margin,x+vw-margin-width),top:clamp(position?.top??y+(vh-height)/2,y+margin,y+vh-margin-height)};
 }
-export function bindPanelMovement(panel){
+export function bindPanelMovement(panel,{compact=false}={}){
  const header=panel.querySelector(':scope > header');let drag=null,position=null,settings={width:100,height:96,auto:true};
  try{Object.assign(settings,JSON.parse(localStorage.getItem(SIZE_KEY)||'{}'));}catch{}
  const viewport=()=>{const v=window.visualViewport;return {width:v?.width||window.innerWidth,height:v?.height||window.innerHeight,left:v?.offsetLeft||0,top:v?.offsetTop||0};};
  const persist=()=>{try{localStorage.setItem(SIZE_KEY,JSON.stringify(settings));}catch{}};
  function fit(){
-  const view=viewport(),r=panelBounds(view,settings,position);if(panel.classList.contains('smm-minimized')){r.width=Math.min(340,view.width-12);r.height=58;r.left=clamp(r.left,view.left,view.left+view.width-r.width);r.top=clamp(r.top,view.top,view.top+view.height-r.height);}
+  const view=viewport();if(compact){const width=Math.min(360,Math.max(200,view.width-12)),left=clamp(position?.left??(view.left+(view.width-width)/2),view.left,view.left+view.width-width),top=clamp(position?.top??view.top+view.height*.18,view.top,view.top+Math.max(0,view.height-Math.min(panel.offsetHeight||160,view.height)));Object.assign(panel.style,{inset:'auto',left:left+'px',top:top+'px',width:width+'px',height:'auto',maxHeight:Math.max(100,view.height-12)+'px',overflow:'auto'});return;}const r=panelBounds(view,settings,position);if(panel.classList.contains('smm-minimized')){r.width=Math.min(340,view.width-12);r.height=58;r.left=clamp(r.left,view.left,view.left+view.width-r.width);r.top=clamp(r.top,view.top,view.top+view.height-r.height);}
   Object.assign(panel.style,{inset:'auto',left:r.left+'px',top:r.top+'px',right:'auto',bottom:'auto',width:r.width+'px',height:r.height+'px',maxWidth:'none',maxHeight:'none'});
  }
  header.addEventListener('pointerdown',e=>{if(e.target.closest('button,input,select,textarea')||e.button!==0)return;const r=panel.getBoundingClientRect();drag={x:e.clientX,y:e.clientY,left:r.left,top:r.top};header.setPointerCapture(e.pointerId);e.preventDefault();});

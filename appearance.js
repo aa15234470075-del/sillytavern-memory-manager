@@ -1,6 +1,8 @@
 // Visual controls share one validated source for live preview and saved settings.
-import {escapeHtml as h} from './core.js?v=0.5.2';
+import {escapeHtml as h} from './core.js?v=0.5.3';
 
+export const FONT_PRESETS={system:'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif',sans:'"PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif',serif:'"Songti SC", SimSun, "Noto Serif CJK SC", serif',kai:'KaiTi, STKaiti, "Kaiti SC", serif',mono:'ui-monospace, "Cascadia Mono", Consolas, "Microsoft YaHei", monospace'};
+export function fontCss(name){return `#smm-panel{font-family:${FONT_PRESETS[name]||FONT_PRESETS.system}}#smm-panel input,#smm-panel textarea,#smm-panel select,#smm-panel button{font-family:inherit}`;}
 export const APPEARANCE_DEFAULTS = {fontSize:15,spacing:12,cardRadius:10,levels:{}};
 const tierDefaults = level => ({size:[15,14,12][level-1],radius:8,padding:[9,9,5][level-1],border:1,fill:'theme',align:'center',colors:false,background:'#426b91',text:'#ffffff',borderColor:'#8aa7c7'});
 const clamp=(value,min,max,fallback)=>Number.isFinite(Number(value))?Math.min(max,Math.max(min,Number(value))):fallback;

@@ -1,4 +1,4 @@
-import {readCompletion} from './stream-reader.js?v=0.5.2';
+import {readCompletion} from './stream-reader.js?v=0.5.3';
 export class ApiClient {
  constructor(settings,log,context){this.settings=settings;this.log=log;this.context=context;this.key='';this.controller=null;this.cachedModels=null;}
  cancel(){this.controller?.abort('cancelled');}
@@ -14,7 +14,7 @@ export class ApiClient {
   for(let attempt=0;attempt<=retries;attempt++){
    const controller=new AbortController();this.controller=controller;
    const cancel=()=>controller.abort('cancelled');externalSignal?.addEventListener('abort',cancel,{once:true});if(externalSignal?.aborted)cancel();
-   const started=performance.now(),seconds=kind==='models'?15:Number(s.timeout||120);
+   const started=performance.now(),seconds=kind==='models'?15:Number(s.timeout||300);
    const timer=setTimeout(()=>controller.abort('timeout'),seconds*1000);
    try{
     const base={chat_completion_source:'openai',reverse_proxy:s.baseUrl.replace(/\/+$/,''),proxy_password:key};
