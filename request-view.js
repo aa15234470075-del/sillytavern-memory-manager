@@ -1,4 +1,4 @@
-import {escapeHtml as h} from './core.js?v=0.5.5';
+import {escapeHtml as h} from './core.js?v=0.5.6';
 // 未调用特定供应商分词器：只能展示近似用量，不能宣称准确token。
 export function estimateTokens(value){const text=typeof value==='string'?value:JSON.stringify(value??'');return value===null||value===undefined?0:[...text].length;}
 export function requestBreakdown(messages){const user=JSON.parse(messages[1].content),source=user.sources.filter(s=>s.role!=='memory'),memories=user.sources.filter(s=>s.role==='memory');const parts={聊天原文:source.length?source:null,已选总结记忆:memories.length?memories:null,世界书:user.reference.worldBooks,人设:user.reference.character,其他旧记忆:user.reference.memories,提示词:messages[0].content};const counts=Object.fromEntries(Object.entries(parts).map(([k,v])=>[k,estimateTokens(v)]));counts.提示词+=estimateTokens(user.task)+estimateTokens(user.outputContract);const total=messages.reduce((sum,m)=>sum+estimateTokens(m.content),0);counts.请求包装=total-Object.values(counts).reduce((a,b)=>a+b,0);return {counts,total,messages};}

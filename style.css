@@ -88,3 +88,12 @@
 
 /* Compact, native help disclosures; separate from settings groups. */
 #smm-panel .smm-help{margin:9px 0;font-size:.88em;font-weight:400;border:0;background:transparent}#smm-panel .smm-help>summary{display:flex;align-items:center;gap:7px;cursor:pointer;list-style:none;padding:3px 0;color:var(--smm-ink);font-weight:400}#smm-panel .smm-help>summary::-webkit-details-marker{display:none}#smm-panel .smm-help-icon{display:inline-flex;flex:0 0 17px;align-items:center;justify-content:center;width:17px;height:17px;border:1px solid currentColor;border-radius:50%;font:bold 12px/1 Georgia,serif;opacity:.8}#smm-panel .smm-help>div{margin:7px 0 10px 24px;padding:9px 11px;border-left:2px solid var(--smm-line);line-height:1.8;overflow-wrap:anywhere}#smm-panel .smm-check-important{padding:16px;min-height:68px;background:var(--smm-surface);border:1px solid var(--smm-accent);border-radius:10px;font-weight:650;font-size:1em}#smm-panel .smm-check-important input{width:22px;height:22px}#smm-panel .smm-batch-advice{display:block;font-size:.85em;font-weight:400;margin:6px 0;opacity:.85}
+
+#smm-panel [data-action="settings-open"]{min-width:36px!important;min-height:36px!important;font-size:21px!important;padding:4px 7px!important}
+#smm-panel .smm-memory-details>summary>[data-pick]{display:inline-block;flex:0 0 auto;width:18px;height:18px;margin:3px 8px 3px 0;cursor:pointer}
+.smm-keyword-warning{border:1px solid #ba8e39;border-radius:8px;padding:9px;color:inherit;background:rgba(185,135,36,.12);font-size:.9em}
+.smm-task-result{display:inline-block;padding:3px 6px;border:1px solid currentColor;border-radius:5px}
+.smm-batch-report small{display:inline-block;margin:3px 0}
+#smm-tour{position:fixed;z-index:2147483646;bottom:12px;left:50%;transform:translateX(-50%);width:min(440px,calc(100vw - 24px));box-sizing:border-box;background:var(--smm-dialog-bg,#263244);color:var(--smm-dialog-ink,#fff);border:2px solid #87a7c9;border-radius:12px;padding:16px;box-shadow:0 5px 24px #0008}
+#smm-tour h3{margin:0 0 10px}#smm-tour p{line-height:1.7}#smm-tour button{margin:4px;padding:8px 12px}.smm-tour-target{outline:2px solid #87a7c9!important;outline-offset:3px}
+.smm-keywords{max-height:85dvh;overflow:auto}.smm-keywords footer{display:flex;gap:10px}.smm-keywords [role=alert]{white-space:pre-wrap}

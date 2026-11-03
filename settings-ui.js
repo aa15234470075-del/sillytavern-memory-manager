@@ -1,6 +1,6 @@
-import {help} from './ui-help.js?v=0.5.5';
-import {appearanceView} from './appearance.js?v=0.5.5';
-import {PROMPT_LIBRARY,FIELDS,escapeHtml as h,outputFormat} from './core.js?v=0.5.5';
+import {help} from './ui-help.js?v=0.5.6';
+import {appearanceView} from './appearance.js?v=0.5.6';
+import {PROMPT_LIBRARY,FIELDS,escapeHtml as h,outputFormat} from './core.js?v=0.5.6';
 
 export function settingsView(s,models,key,books,checkKey='',checkModels=[],repairKey='',repairModels=[]){
  const variant=s.promptVariant==='extended'?'extended':'original';if(s.promptVariant!=='custom')s={...s,...PROMPT_LIBRARY[variant]};
