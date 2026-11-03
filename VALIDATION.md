@@ -71,3 +71,14 @@
 - 云酒馆原页面隔离上下文核验390×844与844×390，面板尺寸及正文区域可用，窗口宽高调节通过；没有写用户真实聊天或设置。
 - 来源选择范围独立保存；保留最近3条的第10～19楼测试只隐藏10～16楼；隐藏接口返回后再次核对真实隐藏标志。
 - 没有真实模型质量／速度保证，没有真实手机测试。队列及未保存草稿不跨刷新恢复。详见V054-验收反馈.md。
+
+
+## v0.5.5 — 2026-11-03
+
+- npm test: 43/43 passed. Every root JavaScript passed node --check; manifest parses; git diff --check passed.
+- Isolated browser regression: 390px and 1280px, each 14 summary calls + 3 checks + 1 independently configured repair; no page errors. Fake chat/model only.
+- Verified preset addition retains prior input, settings profile create/update, manual memory addition, failed edit keeps dialog and edits, archived-memory deletion.
+- Rechecked automatic/batch/manual flows, hidden selected-tail range, rewrite without second check, three summary stages, separate log channels and repair opt-in behavior.
+- Inspected mobile paper-theme screenshot. Source text is retained; exact assembled-message Unicode count includes task and output contract.
+- Attached log diagnosed: three successful HTTP responses contained Markdown instead of the chosen JSON; one provider returned HTTP400 safety rejection. No live private-story AI call was made; model quality/latency remains unverified.
+- Settings schema stays 2. No GitHub update, no default-preset change, no entry-icon change.
