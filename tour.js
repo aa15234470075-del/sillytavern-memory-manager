@@ -13,9 +13,21 @@ const steps=[
  ['logs','.smm-log-switch','查看任务与记忆发送','任务记录查看范围、成功失败和请求阶段；记忆发送记录只显示插件选择的记忆。引导可在设置重新开启。']
 ];
 export function startTour(navigate,finish){
- let index=0,el=document.createElement('section'),target;el.id='smm-tour';el.setAttribute('role','dialog');el.setAttribute('aria-label','新手引导');document.body.append(el);
- const show=async()=>{target?.classList.remove('smm-tour-target');const [tab,selector,title,text]=steps[index];await navigate(tab);target=document.querySelector('#smm-panel '+selector);for(let p=target;p;p=p.parentElement)if(p.tagName==='DETAILS')p.open=true;target?.classList.add('smm-tour-target');target?.scrollIntoView({block:'center'});
- el.replaceChildren();const titleEl=document.createElement('h3');titleEl.textContent=(index+1)+'/'+steps.length+' · '+title;const p=document.createElement('p');p.textContent=text;el.append(titleEl,p);
- for(const [label,fn] of [['跳过',close],['上一步',()=>{if(index>0){index--;void show();}}],[index===steps.length-1?'完成':'下一步',()=>{if(index===steps.length-1)close();else{index++;void show();}}]]){const b=document.createElement('button');b.textContent=label;b.onclick=fn;el.append(b);}
- };function close(){target?.classList.remove('smm-tour-target');el.remove();finish();}void show();return close;
+ let index=0,target,position=null,drag=null,closed=false;
+ const el=document.createElement('div');el.id='smm-tour';el.setAttribute('role','dialog');el.setAttribute('aria-label','新手引导');
+ // A manual popover escapes host stacking contexts without a modal backdrop.
+ if(typeof el.showPopover==='function')el.setAttribute('popover','manual');
+ el.innerHTML='<header class="smm-tour-handle" title="拖动此处移动引导"><h3></h3><span>按住标题拖动</span></header><p></p><div class="smm-tour-actions"></div>';
+ document.body.append(el);try{el.showPopover?.();}catch{}
+ const view=()=>{const v=window.visualViewport;return {x:v?.offsetLeft||0,y:v?.offsetTop||0,w:v?.width||innerWidth,h:v?.height||innerHeight};};
+ const place=()=>{if(closed)return;const v=view();el.style.setProperty('width',Math.min(440,v.w-24)+'px','important');el.style.setProperty('max-height',Math.max(100,v.h-24)+'px','important');const r=el.getBoundingClientRect();let x=position?.x??v.x+(v.w-r.width)/2,y=position?.y??v.y+(v.h-r.height)/2;x=Math.max(v.x+8,Math.min(x,v.x+v.w-r.width-8));y=Math.max(v.y+8,Math.min(y,v.y+v.h-r.height-8));el.style.setProperty('left',x+'px','important');el.style.setProperty('top',y+'px','important');if(position)position={x,y};};
+ const handle=el.querySelector('header');handle.addEventListener('pointerdown',e=>{if(e.button!==0)return;const r=el.getBoundingClientRect();drag={x:e.clientX,y:e.clientY,left:r.left,top:r.top};handle.setPointerCapture(e.pointerId);e.preventDefault();});
+ handle.addEventListener('pointermove',e=>{if(!drag)return;position={x:drag.left+e.clientX-drag.x,y:drag.top+e.clientY-drag.y};place();});
+ for(const event of ['pointerup','pointercancel','lostpointercapture'])handle.addEventListener(event,()=>{drag=null;});
+ window.addEventListener('resize',place);window.visualViewport?.addEventListener('resize',place);window.visualViewport?.addEventListener('scroll',place);
+ const show=async()=>{target?.classList.remove('smm-tour-target');const [tab,selector,title,text]=steps[index];await navigate(tab);if(closed)return;target=document.querySelector('#smm-panel '+selector);for(let p=target;p;p=p.parentElement)if(p.tagName==='DETAILS')p.open=true;target?.classList.add('smm-tour-target');target?.scrollIntoView({block:'center'});
+ el.querySelector('h3').textContent=(index+1)+'/'+steps.length+' · '+title;el.querySelector('p').textContent=text;
+ const actions=el.querySelector('.smm-tour-actions');actions.replaceChildren();
+ for(const [label,fn] of [['跳过',close],['上一步',()=>{if(index>0){index--;void show();}}],[index===steps.length-1?'完成':'下一步',()=>{if(index===steps.length-1)close();else{index++;void show();}}]]){const b=document.createElement('button');b.type='button';b.textContent=label;b.disabled=label==='上一步'&&index===0;b.onclick=fn;actions.append(b);}place();
+ };function close(){if(closed)return;closed=true;target?.classList.remove('smm-tour-target');window.removeEventListener('resize',place);window.visualViewport?.removeEventListener('resize',place);window.visualViewport?.removeEventListener('scroll',place);el.remove();finish();}void show();return close;
 }
