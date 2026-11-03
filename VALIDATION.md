@@ -82,3 +82,4 @@
 - Inspected mobile paper-theme screenshot. Source text is retained; exact assembled-message Unicode count includes task and output contract.
 - Attached log diagnosed: three successful HTTP responses contained Markdown instead of the chosen JSON; one provider returned HTTP400 safety rejection. No live private-story AI call was made; model quality/latency remains unverified.
 - Settings schema stays 2. No GitHub update, no default-preset change, no entry-icon change.
+- Deployment: v0.5.4 backed up; all 27 v0.5.5 files byte-verified. Cloud portrait 390×844 panel sizing/restore passed with an isolated context and test-page splash dismissal. Cloud landscape click verification remained blocked by the host preloader; not counted as passed. Background host resources emitted HTTP404s; no unrelated host changes were made.
