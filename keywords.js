@@ -1,4 +1,4 @@
-import {escapeHtml as h} from './core.js?v=0.5.6';
+import {escapeHtml as h} from './core.js?v=0.5.7';
 export function localKeywords(memory){
  const text=[memory.title,memory.summary,...Object.values(memory.details||{})].join(' '),words=[];
  try{for(const part of new Intl.Segmenter('zh',{granularity:'word'}).segment(text))if(part.isWordLike&&[...part.segment].length>=2)words.push(part.segment);}catch{words.push(...(text.match(/[\p{L}\p{N}]{2,8}/gu)||[]));}

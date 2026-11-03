@@ -1,4 +1,4 @@
-import {readCompletion} from './stream-reader.js?v=0.5.6';
+import {readCompletion} from './stream-reader.js?v=0.5.7';
 export class ApiClient {
  constructor(settings,log,context){this.settings=settings;this.log=log;this.context=context;this.key='';this.controller=null;this.cachedModels=null;}
  cancel(){this.controller?.abort('cancelled');}

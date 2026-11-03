@@ -1,8 +1,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {DEFAULTS,filterText,parseJson,validateDraft} from '../core.js';
+import {DEFAULTS as USER_DEFAULTS,filterText,parseJson,validateDraft} from '../core.js';
 import {formatExample,repairMessages} from '../formats.js';
 import {requestBreakdown} from '../request-view.js';
+// These provenance scenarios explicitly enable quote extraction.
+const DEFAULTS={...USER_DEFAULTS,modes:{...USER_DEFAULTS.modes,quotes:'separate'}};
 test('escaped speech and trailing comma do not confuse the JSON scanner',()=>{
  const raw='```json\n'+JSON.stringify({memories:[{summary:'他说："先走"，又说："回来"。',sources:[0]}]}).replace(/}]}/,'},]}')+'\n```<Memory>ignore</Memory>';
  assert.equal(validateDraft(raw,[{floor:0,text:'原文'}],DEFAULTS)[0].summary,'他说："先走"，又说："回来"。');

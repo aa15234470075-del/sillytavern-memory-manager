@@ -2,10 +2,12 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {hideFloors,floorLabel} from '../memory-tools.js';
 import {readCompletion} from '../stream-reader.js';
-import {DEFAULTS,validateDraft,summaryPrompt} from '../core.js';
+import {DEFAULTS as USER_DEFAULTS,validateDraft,summaryPrompt} from '../core.js';
 import {ApiClient} from '../connection.js';
 import {normalizeIssues} from '../memory-tools.js';
 import {checkRepairMessages} from '../formats.js';
+// These provenance scenarios explicitly enable quote extraction.
+const DEFAULTS={...USER_DEFAULTS,modes:{...USER_DEFAULTS.modes,quotes:'separate'}};
 test('summary/check/repair independently select streaming without altering input',async()=>{
  const original=global.fetch,seen=[];
  global.fetch=async(_url,options)=>{const body=JSON.parse(options.body);seen.push(body);return new Response(JSON.stringify({choices:[{message:{content:'OK'},finish_reason:'stop'}]}));};

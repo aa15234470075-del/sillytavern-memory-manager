@@ -1,9 +1,11 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {DEFAULTS,filterText,validateDraft,eligibleRange,newStore} from '../core.js';
+import {DEFAULTS as USER_DEFAULTS,filterText,validateDraft,eligibleRange,newStore} from '../core.js';
 import {floorLabel} from '../memory-tools.js';
 import {automaticMerge} from '../summary-rules.js';
 
+// These provenance scenarios explicitly enable quote extraction.
+const DEFAULTS={...USER_DEFAULTS,modes:{...USER_DEFAULTS.modes,quotes:'separate'}};
 test('unclosed uppercase content preserves body and strips both closed and open excluded blocks',()=>{
  const settings={...DEFAULTS,sourceTag:'content,context',excludeTags:'think,thinking,details,summary'};
  assert.deepEqual(filterText('<THINK>hidden</THINK><CONTENT>实际剧情',settings),{text:'实际剧情',missing:false,partialTag:true});

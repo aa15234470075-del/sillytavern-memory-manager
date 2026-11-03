@@ -1,8 +1,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {DEFAULTS,summaryPrompt,priorityInstruction,sourceSnapshot,validateDraft} from '../core.js';
+import {DEFAULTS as USER_DEFAULTS,summaryPrompt,priorityInstruction,sourceSnapshot,validateDraft} from '../core.js';
 import {formatExample} from '../formats.js';
 import {quoteChecks} from '../memory-tools.js';
+// These provenance scenarios explicitly enable quote extraction.
+const DEFAULTS={...USER_DEFAULTS,modes:{...USER_DEFAULTS.modes,quotes:'separate'}};
 test('quotes require actual assistant provenance, never floor parity or user repetition',()=>{
  const sources=[{floor:2,role:'user',text:'用户的原话'},{floor:3,role:'assistant',text:'角色真正说出'}];
  const item=validateDraft(JSON.stringify({memories:[{summary:'事实',sources:[2,3],details:{quotes:['用户的原话','角色真正说出']}}]}),sources,DEFAULTS)[0];
