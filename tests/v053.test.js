@@ -31,7 +31,7 @@ test('request counts separate original chat from selected confirmed summaries',(
 test('memory stage labels and key presets appear in the requested locations',()=>{
  assert.equal(summaryLevelLabel(0),'手动记忆');assert.equal(summaryLevelLabel(3),'三次总结');
  const view=settingsView(structuredClone(DEFAULTS),[],'',[]);
- assert.ok(view.indexOf('API 密钥预设')<view.indexOf('独立 API 连接'));
- assert.ok(view.includes('自动分级总结')&&view.includes('300秒'));
+ assert.ok(view.indexOf('API 密钥预设')<view.indexOf('总结 API'));
+ assert.ok(view.includes('自动总结与分级')&&view.includes('300秒'));
  assert.match(renderMemory({kind:'fixed',title:'标题',summary:'正文',sources:[1,2,3,4],level:3,details:{}},DEFAULTS),/三次总结.*第1-4楼/);
 });

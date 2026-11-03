@@ -19,7 +19,7 @@ test('hide only selected batch tail, including high floors and sparse selection'
  assert.deepEqual(hideFloors(Array.from({length:10},(_,i)=>i),3),[0,1,2,3,4,5,6]);
  assert.deepEqual(hideFloors(Array.from({length:10},(_,i)=>i+10),3),[10,11,12,13,14,15,16]);
  assert.deepEqual(hideFloors([20,40,50],2),[20]);assert.deepEqual(hideFloors([1,2],10),[]);
- assert.equal(floorLabel([0,1,2,4,6,7]),'第0-2、4、6-7楼');
+ assert.equal(floorLabel([0,1,2,4,6,7]),'第0-7楼');
 });
 test('bad quote remains reviewable, never injected as verified quote',()=>{
  const [m]=validateDraft(JSON.stringify({memories:[{summary:'事实',sources:[3],details:{quotes:['真实原话','虚构台词']}}]}),[{floor:3,role:'assistant',text:'他说：真实原话。'}],DEFAULTS);

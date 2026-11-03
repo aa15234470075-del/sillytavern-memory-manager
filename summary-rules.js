@@ -8,7 +8,7 @@ export function automaticMerge(memories,batches,settings){
  for(const level of [2,3]){
   if(!settings[level===2?'autoSecondary':'autoTertiary'])continue;
   const count=Number(settings[level===2?'secondaryCount':'tertiaryCount']);if(!Number.isInteger(count)||count<2)continue;
-  const eligible=memories.filter(m=>m.status==='active'&&(m.level||1)===level-1&&m.kind!=='fixed'&&!m.imported&&m.sources?.length);
+  const eligible=memories.filter(m=>m.status==='active'&&(m.level??1)===level-1&&m.kind!=='fixed'&&!m.imported&&m.sources?.length);
   const groups=batches.filter(b=>b.approved&&b.level===level-1).map(b=>({batch:b,items:eligible.filter(m=>b.ids.includes(m.id))})).filter(g=>g.items.length).sort((a,b)=>a.batch.created-b.batch.created);
   if(groups.length>=count)return {level,parents:groups.slice(0,count).flatMap(g=>g.items)};
  }
