@@ -1,6 +1,6 @@
-import {help} from './ui-help.js?v=0.5.8';
+import {help} from './ui-help.js?v=0.5.9';
 // Visual controls share one validated source for live preview and saved settings.
-import {escapeHtml as h} from './core.js?v=0.5.8';
+import {escapeHtml as h} from './core.js?v=0.5.9';
 
 export const FONT_PRESETS={system:'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif',sans:'"PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif',serif:'"Songti SC", SimSun, "Noto Serif CJK SC", serif',kai:'KaiTi, STKaiti, "Kaiti SC", serif',mono:'ui-monospace, "Cascadia Mono", Consolas, "Microsoft YaHei", monospace'};
 export function fontCss(name){return `#smm-panel{font-family:${name==='tavern'?'var(--smm-tavern-font, inherit)':FONT_PRESETS[name]||FONT_PRESETS.system}}#smm-panel input,#smm-panel textarea,#smm-panel select,#smm-panel button{font-family:inherit}`;}

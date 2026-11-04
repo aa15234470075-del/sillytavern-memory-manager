@@ -3,6 +3,14 @@ export function floorLabel(floors=[]){
  return a.length?'第'+a[0]+'-'+a.at(-1)+'楼':'用户手动';
 }
 export function hideFloors(floors,keep){const a=[...new Set(floors)].sort((a,b)=>a-b);return a.slice(0,Math.max(0,a.length-Math.max(0,Number(keep)||0)));}
+// Revisit tails of earlier saved batches when a newer batch is confirmed.
+export function pendingHideFloors(batches,currentFloors,keep){
+ const current=[...new Set(currentFloors)].filter(Number.isInteger);
+ if(!current.length)return [];
+ const end=Math.max(...current);
+ const previous=batches.filter(b=>b.approved&&b.level===1&&b.hideAfter!==false).flatMap(b=>b.floors||[]);
+ return hideFloors([...previous,...current].filter(f=>Number.isInteger(f)&&f>=0&&f<=end),keep);
+}
 export function quoteChecks(value,sources,floors){
  const values=Array.isArray(value)?value:typeof value==='string'?value.split('\n'):[];
  return values.filter(x=>typeof x==='string'&&x.trim()).map(x=>{const text=x.trim(),source=sources.find(s=>floors.some(f=>(s.originalFloors||[s.floor]).includes(f))&&(s.role==='assistant'&&s.text.includes(text)||s.role==='memory'&&(s.quotes||[]).some(q=>q.verified&&q.text===text)));return {text,verified:!!source,floor:source?.role==='memory'?(source.quotes.find(q=>q.verified&&q.text===text)?.floor??null):source?.floor??null,reason:source?'逐字核对通过（角色回复楼层）':'未在对应角色回复楼层找到逐字一致原话，不发送；用户输入不作为角色原话'};});
