@@ -3,15 +3,18 @@ export const JSON_RECOVERED=Symbol('memory-manager-json-quote-recovery');
 // Only paired, unescaped quotes inside a value string are eligible. Never
 // invent missing commas/braces, repair keys, or accept an incomplete document.
 export function recoverValueQuotes(text){
- let out='',quoted=false,escaped=false,value=false,changed=0,inside=0,previous='';
+ let out='',quoted=false,escaped=false,value=false,objectValue=false,changed=0,inside=0,previous='';
  for(let i=0;i<text.length;i++){
   const c=text[i];
-  if(!quoted){out+=c;if(c==='"'){quoted=true;value=previous===':'||previous==='[';inside=0;}if(!/\s/.test(c))previous=c;continue;}
+  if(!quoted){out+=c;if(c==='"'){quoted=true;value=previous===':'||previous==='[';objectValue=previous===':';inside=0;}if(!/\s/.test(c))previous=c;continue;}
   if(escaped){out+=c;escaped=false;continue;}if(c==='\\'){out+=c;escaped=true;continue;}
   if(c!=='"'){out+=c;continue;}
   const next=text.slice(i+1).match(/^\s*(.)/s)?.[1]||'';
-  if(value&&next&&!/[,\]}:]/.test(next)){
-   if(/["{\[]/.test(next))return null;
+  const afterComma=next===','?text.slice(i+1).match(/^\s*,\s*(.)/s)?.[1]:null;
+  const textComma=objectValue&&next===','&&afterComma&&!/["}]/.test(afterComma);
+  const textColon=next===':'&&inside%2===1;
+  if(value&&next&&(!/[,\]}:]/.test(next)||textComma||textColon)){
+   if(/["{\[]/.test(next)&&!(next==='"'&&inside%2===1&&/^"\s*[,}\]]/.test(text.slice(i+1))))return null;
    out+='\\"';changed++;inside++;continue;
   }
   if(inside%2)return null;

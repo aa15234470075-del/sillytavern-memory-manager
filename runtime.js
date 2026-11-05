@@ -1,4 +1,4 @@
-import { NS } from './core.js?v=0.6.1';
+import { NS } from './core.js?v=0.6.2';
 export function context(){return window.SillyTavern?.getContext?.()||window.getContext?.()||{};}
 export function runtime(){const existing=window.__ST_ADAPTER_CORE_INSTANCE__,c=context();if(!c.chat||!c.eventSource)throw Error('当前页面未提供酒馆聊天接口');const eventOn=(...args)=>existing?.capabilities?.eventOn?existing.events.on(...args):context().eventSource.on(...args);const setPrompt=text=>existing?.capabilities?.extensionPrompt?existing.prompt.set(text,NS,1,0):context().setExtensionPrompt(NS,text,1,0,false,0);return {ctx:context,chat:()=>context().chat,events:{on:eventOn},prompt:{set:setPrompt,clear:()=>setPrompt('')},shared:existing};}
 export function chatKey(){const c=context();return [c.groupId?'group:'+c.groupId:'character:'+String(c.characters?.[c.characterId]?.avatar||c.characterId),c.chatId||''].join('::');}
@@ -7,7 +7,7 @@ let database;export async function db(){if(database)return database;database=awa
 export async function record(store,value){const d=await db();return new Promise((resolve,reject)=>{const t=d.transaction(store,'readwrite');t.objectStore(store).put(value);t.oncomplete=resolve;t.onerror=()=>reject(t.error);});}
 export async function records(store){const d=await db();return new Promise((resolve,reject)=>{const q=d.transaction(store).objectStore(store).getAll();q.onsuccess=()=>resolve(q.result);q.onerror=()=>reject(q.error);});}
 export function download(name,value,type='application/json'){const blob=new Blob([typeof value==='string'?value:JSON.stringify(value,null,2)],{type});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),15000);}
-export { ApiClient } from './connection.js?v=0.6.1';
+export { ApiClient } from './connection.js?v=0.6.2';
 export async function nativeHide(start,end,unhide=false){const mod=await import('/scripts/chats.js');if(typeof mod.hideChatMessageRange!=='function')throw Error('当前酒馆缺少原生隐藏接口，记忆已保留，未隐藏楼层');await mod.hideChatMessageRange(start,end,unhide);}
 export async function readWorldBooks(c,mod,selected=[]){
  const char=c.characters?.[c.characterId],avatar=String(char?.avatar||'').replace(/[.][^.]+$/,'');

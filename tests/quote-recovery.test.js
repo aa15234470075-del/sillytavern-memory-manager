@@ -12,3 +12,8 @@ test('quote compatibility refuses incomplete, ambiguous, key and multi-result re
  const a='{"memories":[{"summary":"他说"甲"后停。","sources":[0]}]}',b=a.replace('甲','乙');assert.throws(()=>parseResponse('```json\n'+a+'\n```\n```json\n'+b+'\n```'),/多份/);
  assert.equal(recoverValueQuotes('{"memories":[]}'),null);
 });
+test('dialogue punctuation and paired quotes at field end preserve exact original values',()=>{
+ const raw='{"memories":[{"summary":"他说"上楼摸摸",随后停下。","details":{"items":"房间的"狗窝":白色木栏。","quotes":"他说:"我受着。""},"sources":[0]}]}';
+ const parsed=parseResponse(raw);assert.equal(parsed.memories[0].summary,'他说"上楼摸摸",随后停下。');assert.equal(parsed.memories[0].details.items,'房间的"狗窝":白色木栏。');assert.equal(parsed.memories[0].details.quotes,'他说:"我受着。"');
+ assert.throws(()=>validateDraft('{"memories":[{"summary":"x":"y","sources":[0]}]}',[{floor:0,role:'assistant',text:'材料'}],DEFAULTS));
+});
