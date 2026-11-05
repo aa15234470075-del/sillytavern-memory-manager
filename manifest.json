@@ -1,6 +1,6 @@
 {
   "display_name": "酒馆记忆管理器",
-  "version": "0.6.2",
+  "version": "0.7.0",
   "loading_order": 120,
   "js": "index.js",
   "css": "style.css",

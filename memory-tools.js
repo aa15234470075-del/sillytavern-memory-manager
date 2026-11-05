@@ -18,7 +18,7 @@ export function quoteChecks(value,sources,floors){
 
 export function normalizeIssues(value,items=[]){
  if(!Array.isArray(value)||value.some(i=>!i||typeof i.message!=='string'||!i.message.trim()))throw Error('检查格式不正确：需要有效issues列表');
- return value.map(i=>({id:items.some(m=>m.id===i.id)?i.id:null,location:typeof i.id==='string'&&i.id.trim()?i.id:'未标明位置',message:i.message.trim(),suggestion:typeof i.suggestion==='string'?i.suggestion.trim():''}));
+ return value.map(i=>({id:items.some(m=>m.id===i.id)?i.id:(()=>{if(typeof i.quote!=='string'||!i.quote)return null;const matches=items.filter(m=>{const field=String(i.field||'summary').split('.').reduce((v,k)=>v?.[k],m);return typeof field==='string'&&field.includes(i.quote);});return matches.length===1?matches[0].id:null;})(),location:typeof i.id==='string'&&i.id.trim()?i.id:'未标明位置',message:i.message.trim(),quote:typeof i.quote==='string'?i.quote:'',field:typeof i.field==='string'?i.field:'summary',suggestion:typeof i.suggestion==='string'?i.suggestion.trim():''}));
 }
 export function compareMemories(before,after){
  const a=before.map(m=>m.summary).join('\n'),b=after.map(m=>m.summary).join('\n');

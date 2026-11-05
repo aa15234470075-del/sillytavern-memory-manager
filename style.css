@@ -122,3 +122,14 @@
 #smm-panel .smm-settings-profiles button{padding:5px 9px;min-height:32px}
 #smm-panel .smm-draft-actions{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
 #smm-panel>.smm-save:not([hidden]){display:flex!important;position:relative!important;inset:auto!important;width:100%!important;min-height:58px!important;max-height:25dvh;overflow:auto;flex:0 0 auto!important;visibility:visible!important;opacity:1!important;transform:none!important}
+
+/* v0.7.0 review, comparison and source ordering */
+#smm-panel .smm-source-sort {display:flex;gap:10px;align-items:center;margin:8px 0}
+#smm-panel .smm-source-sort select {width:auto;min-width:150px}
+#smm-panel .smm-save-preview {display:block;width:100%;font-size:12px;line-height:1.6;overflow-wrap:anywhere}
+#smm-panel .smm-save {flex-wrap:wrap}
+#smm-panel mark.smm-review-mark {background:#ffe49a;color:#332713;border-bottom:2px solid #aa7300}
+#smm-panel mark.smm-diff-added {background:#c6efd3;color:#113d23}
+#smm-panel mark.smm-diff-removed {background:#f4c7ce;color:#681a29}
+.smm-rehearsal pre,#smm-panel pre {white-space:pre-wrap;overflow-wrap:anywhere}
+.smm-keywords [data-health] {display:block;line-height:1.6}
