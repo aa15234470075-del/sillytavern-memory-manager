@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {sortMemories,markedText,textDiff,keywordHealth,rehearse,characters} from '../experience.js';
+import {sortMemories,markedText,keywordHealth,rehearse,characters} from '../experience.js';
 import {nativeRequest,canonicalNative,readNative} from '../native-api.js';
 import {DEFAULTS} from '../core.js';
 import {ApiClient} from '../connection.js';
@@ -8,9 +8,8 @@ test('source chronology is stable, reversible and ignores narrative dates',()=>{
  const rows=[{id:'b',sources:[20,22],summary:'古代'},{id:'a',sources:[2],summary:'未来'},{id:'c',sources:[]}];
  assert.deepEqual(sortMemories(rows).map(m=>m.id),['a','b','c']);assert.deepEqual(sortMemories(rows,'desc').map(m=>m.id),['c','b','a']);assert.equal(rows[0].id,'b');
 });
-test('review marks exact overlapping evidence, escapes HTML, and diff keeps common anchors',()=>{
+test('review marks exact overlapping evidence and escapes HTML',()=>{
  assert.equal(markedText('<a>错误地点',['错误','错误地点']), '&lt;a&gt;<mark class="smm-review-mark">错误地点</mark>');assert.equal(markedText('原句',['不存在']),'原句');
- const diff=textDiff('前句旧内容后句','前句新内容后句');assert.match(diff.before,/removed/);assert.match(diff.after,/added/);assert.equal(textDiff('同','同').changed,false);
 });
 test('rehearsal uses selected real floors and exact final injection characters without mutating recall',()=>{
  const memories=[{id:'m',kind:'long',status:'active',title:'铜印',summary:'铜印归阿宁',keywords:['铜印','阿宁'],sources:[0],details:{},level:1}],chat=[{mes:'无关',is_user:true},{mes:'铜印阿宁',is_user:false},{mes:'铜印阿宁',is_system:true}];const recall={};

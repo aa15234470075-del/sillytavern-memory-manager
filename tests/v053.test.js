@@ -12,11 +12,12 @@ test('summary character ranges are high priority defaults with explicit user ove
  }
  assert.equal(DEFAULTS.timeout,300);assert.equal(DEFAULTS.autoHide,true);assert.ok(summaryLengthRule(DEFAULTS).includes('summary'));
 });
-test('automatic merging counts approved active summary batches and excludes fixed or imported items',()=>{
+test('automatic merging counts saved eligible memory entries, not approval batches',()=>{
  const memories=Array.from({length:4},(_,i)=>({id:'m'+i,level:1,status:'active',kind:'short',sources:[i]}));
  const batches=[{id:'a',level:1,approved:true,ids:['m0','m1'],created:1},{id:'b',level:1,approved:true,ids:['m2','m3'],created:2}];
- assert.equal(automaticMerge(memories,batches,{...DEFAULTS,autoSecondary:true,secondaryCount:3}),null);
- const result=automaticMerge(memories,batches,{...DEFAULTS,autoSecondary:true,secondaryCount:2});assert.equal(result.level,2);assert.equal(result.parents.length,4);
+ assert.equal(automaticMerge(memories,batches,{...DEFAULTS,autoSecondary:true,secondaryCount:5}),null);
+ assert.equal(automaticMerge(memories,batches,{...DEFAULTS,autoSecondary:true,secondaryCount:3}).parents.length,3);
+ const result=automaticMerge(memories,batches,{...DEFAULTS,autoSecondary:true,secondaryCount:2});assert.equal(result.level,2);assert.equal(result.parents.length,2);
  assert.equal(automaticMerge(memories.map(m=>({...m,status:'archived'})),batches,{...DEFAULTS,autoSecondary:true,secondaryCount:2}),null);
  assert.equal(automaticMerge(memories,batches,DEFAULTS),null);
  const second=memories.map(m=>({...m,level:2})),secondBatches=batches.map(b=>({...b,level:2}));

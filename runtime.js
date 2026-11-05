@@ -1,4 +1,4 @@
-import { NS } from './core.js?v=0.7.0';
+import { NS } from './core.js?v=0.7.1';
 export function context(){return window.SillyTavern?.getContext?.()||window.getContext?.()||{};}
 export function runtime(){const existing=window.__ST_ADAPTER_CORE_INSTANCE__,c=context();if(!c.chat||!c.eventSource)throw Error('当前页面未提供酒馆聊天接口');const eventOn=(...args)=>existing?.capabilities?.eventOn?existing.events.on(...args):context().eventSource.on(...args);const setPrompt=text=>existing?.capabilities?.extensionPrompt?existing.prompt.set(text,NS,1,0):context().setExtensionPrompt(NS,text,1,0,false,0);return {ctx:context,chat:()=>context().chat,events:{on:eventOn},prompt:{set:setPrompt,clear:()=>setPrompt('')},shared:existing};}
 export function chatKey(){const c=context();return [c.groupId?'group:'+c.groupId:'character:'+String(c.characters?.[c.characterId]?.avatar||c.characterId),c.chatId||''].join('::');}
@@ -6,8 +6,10 @@ export function characterKey(){const c=context();if(c.groupId)throw Error('群�
 let database;export async function db(){if(database)return database;database=await new Promise((resolve,reject)=>{const q=indexedDB.open(NS,1);q.onupgradeneeded=()=>{q.result.createObjectStore('logs',{keyPath:'id'});q.result.createObjectStore('snapshots',{keyPath:'id'});};q.onsuccess=()=>resolve(q.result);q.onerror=()=>reject(q.error);});return database;}
 export async function record(store,value){const d=await db();return new Promise((resolve,reject)=>{const t=d.transaction(store,'readwrite');t.objectStore(store).put(value);t.oncomplete=resolve;t.onerror=()=>reject(t.error);});}
 export async function records(store){const d=await db();return new Promise((resolve,reject)=>{const q=d.transaction(store).objectStore(store).getAll();q.onsuccess=()=>resolve(q.result);q.onerror=()=>reject(q.error);});}
+export async function readRecord(store,id){const d=await db();return new Promise((resolve,reject)=>{const q=d.transaction(store).objectStore(store).get(id);q.onsuccess=()=>resolve(q.result);q.onerror=()=>reject(q.error);});}
+export async function logHeads(chat){const d=await db();return new Promise((resolve,reject)=>{const out=[],q=d.transaction('logs').objectStore('logs').openCursor();q.onsuccess=()=>{const cursor=q.result;if(!cursor){resolve(out);return;}const x=cursor.value;if(x.chat===chat){const v=x.data||{};out.push({...x,data:{level:v.level,range:v.range},floors:x.stage==='总结输入'?(v.sources||[]).flatMap(s=>s.originalFloors||[s.floor]):[]});}cursor.continue();};q.onerror=()=>reject(q.error);});}
 export function download(name,value,type='application/json'){const blob=new Blob([typeof value==='string'?value:JSON.stringify(value,null,2)],{type});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),15000);}
-export { ApiClient } from './connection.js?v=0.7.0';
+export { ApiClient } from './connection.js?v=0.7.1';
 export async function nativeHide(start,end,unhide=false){const mod=await import('/scripts/chats.js');if(typeof mod.hideChatMessageRange!=='function')throw Error('当前酒馆缺少原生隐藏接口，记忆已保留，未隐藏楼层');await mod.hideChatMessageRange(start,end,unhide);}
 export async function readWorldBooks(c,mod,selected=[]){
  const char=c.characters?.[c.characterId],avatar=String(char?.avatar||'').replace(/[.][^.]+$/,'');

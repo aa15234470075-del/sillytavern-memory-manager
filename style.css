@@ -129,7 +129,12 @@
 #smm-panel .smm-save-preview {display:block;width:100%;font-size:12px;line-height:1.6;overflow-wrap:anywhere}
 #smm-panel .smm-save {flex-wrap:wrap}
 #smm-panel mark.smm-review-mark {background:#ffe49a;color:#332713;border-bottom:2px solid #aa7300}
-#smm-panel mark.smm-diff-added {background:#c6efd3;color:#113d23}
-#smm-panel mark.smm-diff-removed {background:#f4c7ce;color:#681a29}
 .smm-rehearsal pre,#smm-panel pre {white-space:pre-wrap;overflow-wrap:anywhere}
 .smm-keywords [data-health] {display:block;line-height:1.6}
+/* v0.7.1: fixed rehearsal controls and modal-aware task progress */
+.smm-rehearsal[open]{display:flex;flex-direction:column;overflow:hidden;max-height:85dvh}
+.smm-rehearsal>header{display:flex;align-items:center;justify-content:space-between;flex:0 0 auto;gap:12px}
+.smm-rehearsal>header button{min-width:36px;min-height:36px}
+.smm-rehearsal-body{overflow:auto;min-height:0}
+#smm-floating-progress[popover]{margin:0;inset:auto;right:16px;bottom:16px;color:var(--smm-ink,#eee);background:var(--smm-bg,#282828);border:1px solid var(--smm-line,#888);overflow:auto;max-height:70dvh}
+.smm-keywords [role=alert]{position:sticky;top:0;background:var(--smm-bg,#282828);color:var(--smm-ink,#eee);padding:8px;z-index:1}

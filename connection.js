@@ -1,6 +1,6 @@
-import {nativeRequest,canonicalNative,readNative} from './native-api.js?v=0.7.0';
-import {summarySchema} from './output-contract.js?v=0.7.0';
-import {readCompletion} from './stream-reader.js?v=0.7.0';
+import {nativeRequest,canonicalNative,readNative} from './native-api.js?v=0.7.1';
+import {summarySchema} from './output-contract.js?v=0.7.1';
+import {readCompletion} from './stream-reader.js?v=0.7.1';
 export class ApiClient {
  constructor(settings,log,context){this.settings=settings;this.log=log;this.context=context;this.key='';this.controller=null;this.cachedModels=null;}
  cancel(){this.controller?.abort('cancelled');}
@@ -23,7 +23,7 @@ export class ApiClient {
     const stream=kind==='summary'?Boolean(s.summaryStream):kind==='check'?Boolean(s.checkStream):kind==='repair'?Boolean(s.repairStream):Boolean(s.stream);
     const body=kind==='models'?base:{...base,messages,model:s.model,stream,temperature:0.2,...(s.outputTokens?{max_tokens:Number(s.outputTokens)}:{})};
     if(s.structuredOutput&&s.outputMode==='json'&&['summary','repair','check'].includes(kind)){body.json_schema={name:kind==='check'?'memory_review':'memory_summary',strict:true,value:kind==='check'?{type:'object',properties:{issues:{type:'array',items:{type:'object',properties:{id:{type:'string'},message:{type:'string'},suggestion:{type:'string'},quote:{type:'string'},field:{type:'string'}},required:['id','message','suggestion','quote','field'],additionalProperties:false}}},required:['issues'],additionalProperties:false}:summarySchema({...s,summaryLevel:kind==='summary'?JSON.parse(messages.at(-1).content).summaryLevel||1:s.summaryLevel||1})};}
-    await this.log('API请求准备',{kind,attempt:attempt+1,model:s.model,stream,at:new Date().toISOString(),characters:JSON.stringify(messages).length});
+    await this.log('API请求准备',{kind,attempt:attempt+1,model:s.model,stream,at:new Date().toISOString(),characters:JSON.stringify(messages).length,outputTokens:s.outputTokens||null});
     if(controller.signal.aborted)throw Error('已取消请求');
     // Refresh only the local Tavern CSRF token. This is not a model retry.
     phase=native?'准备浏览器直连':'刷新酒馆会话令牌';const headers=native?{}:{...this.context().getRequestHeaders()};
@@ -48,6 +48,7 @@ export class ApiClient {
     }
     this.lastUsage=data.usage||null;const choice=data.choices?.[0],content=choice?.message?.content;
     if(typeof content!=='string'||!content.trim())throw Error('模型未返回正文，原始返回已保留');
+    await this.log('API结果统计',{kind,model:s.model,elapsedMs:Math.round(performance.now()-started),outputCharacters:Array.from(content).length,usage:this.lastUsage,outputTokens:s.outputTokens||null,finishReason:choice.finish_reason});
     if(choice.finish_reason==='length')throw Error('模型输出被截断，请增大输出上限；本次输入未被裁剪');
     if(validate){try{validate(content);}catch(e){e.validation=true;throw e;}}
     return content;
