@@ -1,4 +1,4 @@
-import {escapeHtml as h} from './core.js?v=0.7.1';
+import {escapeHtml as h} from './core.js?v=0.7.2';
 
 const compact=(text,n=90)=>{const s=String(text||'').replace(/\s+/g,' ').trim();return s.length>n?s.slice(0,n)+'…':s;};
 // Summaries are presentation only: full evidence remains available without another API call.

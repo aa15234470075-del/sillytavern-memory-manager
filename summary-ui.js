@@ -1,5 +1,5 @@
-import {help} from './ui-help.js?v=0.7.1';
-import {escapeHtml as h} from './core.js?v=0.7.1';
+import {help} from './ui-help.js?v=0.7.2';
+import {escapeHtml as h} from './core.js?v=0.7.2';
 
 const button=(a,t,extra='')=>`<button type="button" data-action="${a}" data-button-level="2" ${extra}>${t}</button>`;
 export function countControls(s){return `<section class="smm-count-controls"><label>记忆条数<select data-count-mode><option value="events" ${s.memoryCountMode==='events'?'selected':''}>按事件拆分</option><option value="time" ${s.memoryCountMode==='time'?'selected':''}>按时间拆分</option><option value="single" ${s.memoryCountMode==='single'?'selected':''}>合成一条</option><option value="count" ${s.memoryCountMode==='count'?'selected':''}>指定条数</option></select></label><label ${s.memoryCountMode==='count'?'':'hidden'}>指定条数<input ${s.memoryCountMode==='count'?'':'disabled'} data-count-value type="text" inputmode="numeric" value="${s.memoryCount||1}"></label><small>使用KIRO或DS时，推荐选择“指定条数”，避免生成过多、过细的记忆；不强制改变拆分方式。批量时对每批生效；详略字数按每条记忆计算。输出不符会提示核对，不丢弃内容。</small></section>`;}

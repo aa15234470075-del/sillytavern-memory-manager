@@ -10,20 +10,22 @@ export function panelBounds(viewport,settings={},position=null){
  return {width,height,left:clamp(position?.left??x+(vw-width)/2,x+margin,x+vw-margin-width),top:clamp(position?.top??y+(vh-height)/2,y+margin,y+vh-margin-height)};
 }
 export function bindPanelMovement(panel,{compact=false}={}){
- const header=panel.querySelector(':scope > header');let drag=null,position=null,settings={width:100,height:96,auto:true};
- try{Object.assign(settings,JSON.parse(localStorage.getItem(SIZE_KEY)||'{}'));}catch{}
+ const header=panel.querySelector(':scope > header');let drag=null,position=null,settings=compact?{width:300,height:176}:{width:100,height:96,auto:true};const storageKey=compact?SIZE_KEY+':progress':SIZE_KEY;
+ try{Object.assign(settings,JSON.parse(localStorage.getItem(storageKey)||'{}'));}catch{}
+ if(compact&&settings.position)position=settings.position;
  const viewport=()=>{const v=window.visualViewport;return {width:v?.width||window.innerWidth,height:v?.height||window.innerHeight,left:v?.offsetLeft||0,top:v?.offsetTop||0};};
- const persist=()=>{try{localStorage.setItem(SIZE_KEY,JSON.stringify(settings));}catch{}};
+ const persist=()=>{try{localStorage.setItem(storageKey,JSON.stringify({...settings,...(compact?{position}: {})}));}catch{}};
  function fit(){
-  const view=viewport();if(compact){const width=Math.min(360,Math.max(200,view.width-12)),left=clamp(position?.left??(view.left+(view.width-width)/2),view.left,view.left+view.width-width),top=clamp(position?.top??view.top+view.height*.18,view.top,view.top+Math.max(0,view.height-Math.min(panel.offsetHeight||160,view.height)));Object.assign(panel.style,{inset:'auto',left:left+'px',top:top+'px',width:width+'px',height:'auto',maxHeight:Math.max(100,view.height-12)+'px',overflow:'auto'});return;}const r=panelBounds(view,settings,position);if(panel.classList.contains('smm-minimized')){r.width=Math.min(340,view.width-12);r.height=58;r.left=clamp(r.left,view.left,view.left+view.width-r.width);r.top=clamp(r.top,view.top,view.top+view.height-r.height);}
+  const view=viewport();if(compact){const width=Math.min(Number(settings.width)||300,Math.max(180,view.width-12)),height=Math.min(Number(settings.height)||176,Math.max(100,view.height-12)),left=clamp(position?.left??(view.left+(view.width-width)/2),view.left,view.left+Math.max(0,view.width-width)),top=clamp(position?.top??view.top+view.height*.18,view.top,view.top+Math.max(0,view.height-height));Object.assign(panel.style,{inset:'auto',left:left+'px',top:top+'px',width:width+'px',height:height+'px',maxWidth:Math.max(180,view.width-12)+'px',maxHeight:Math.max(100,view.height-12)+'px'});return;}const r=panelBounds(view,settings,position);if(panel.classList.contains('smm-minimized')){r.width=Math.min(340,view.width-12);r.height=58;r.left=clamp(r.left,view.left,view.left+view.width-r.width);r.top=clamp(r.top,view.top,view.top+view.height-r.height);}
   Object.assign(panel.style,{inset:'auto',left:r.left+'px',top:r.top+'px',right:'auto',bottom:'auto',width:r.width+'px',height:r.height+'px',maxWidth:'none',maxHeight:'none'});
  }
  header.addEventListener('pointerdown',e=>{if(e.target.closest('button,input,select,textarea')||e.button!==0)return;const r=panel.getBoundingClientRect();drag={x:e.clientX,y:e.clientY,left:r.left,top:r.top};header.setPointerCapture(e.pointerId);e.preventDefault();});
  header.addEventListener('pointermove',e=>{if(!drag)return;position={left:drag.left+e.clientX-drag.x,top:drag.top+e.clientY-drag.y};fit();});
- const stop=()=>drag=null;header.addEventListener('pointerup',stop);header.addEventListener('pointercancel',stop);
+ const stop=()=>{drag=null;if(compact)persist();};header.addEventListener('pointerup',stop);header.addEventListener('pointercancel',stop);
  window.addEventListener('resize',fit);window.visualViewport?.addEventListener('resize',fit);window.visualViewport?.addEventListener('scroll',fit);
  const toggle=()=>{const minimized=panel.classList.toggle('smm-minimized');const b=panel.querySelector('[data-action=minimize]');if(b)b.textContent=minimized?'□':'−';fit();};
- toggle.fit=fit;
+ toggle.fit=fit;toggle.resize=(width,height)=>{settings.width=clamp(width,240,900);settings.height=clamp(height,150,700);persist();fit();};
+ if(compact){let timer;new ResizeObserver(()=>{clearTimeout(timer);timer=setTimeout(()=>{if(!panel.isConnected||panel.hidden||!panel.offsetWidth)return;settings.width=panel.offsetWidth;settings.height=panel.offsetHeight;persist();},150);}).observe(panel);}
  toggle.reset=()=>{settings={width:100,height:96,auto:true};position=null;panel.classList.remove('smm-minimized');const b=panel.querySelector('[data-action=minimize]');if(b)b.textContent='−';persist();fit();};
  toggle.configure=()=>{
   const existing=document.getElementById('smm-window-size-dialog');if(existing){existing.focus();return;}

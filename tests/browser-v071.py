@@ -153,7 +153,7 @@ with sync_playwright() as p:
   page.locator('[data-tab=memories]').click();page.locator('[data-source-sort]').select_option('desc')
   page.locator('[data-action=rehearsal]').click();page.locator('.smm-rehearsal [data-start]').fill('1');page.locator('.smm-rehearsal [data-end]').fill('3');page.locator('.smm-rehearsal [data-run]').click()
   assert '最终记忆文本' in page.locator('.smm-rehearsal [data-results]').inner_text();page.locator('.smm-rehearsal [data-close]').click()
-  page.locator('[data-action=keyword-health]').click();assert page.locator('.smm-keywords [data-health]').count()>0;page.locator('.smm-keywords [data-generate]').click();page.locator('.smm-keywords > footer [data-cancel]').click()
+  page.evaluate('(()=>{const ms=window.SillyTavern.getContext().chatMetadata.st_memory_manager.memories;if(!ms.some(m=>m.kind==="long")&&ms.length)ms[0].kind="long"})()');page.locator('[data-action=keyword-health]').click();assert page.locator('.smm-keywords [data-health]').count()>0;page.locator('.smm-keywords [data-generate]').click();page.locator('.smm-keywords > footer [data-cancel]').click()
   page.locator('[data-tab=summary]').click();drawers();page.locator('#smm-start').fill('0');page.locator('#smm-end').fill('3');hold['value']=True
   page.locator('[data-action=summarize]').click()
   for _ in range(100):
@@ -224,7 +224,7 @@ with sync_playwright() as p:
   behavior['multi']=False
   # Local keywords produce visible candidates without calling any API.
   page.locator('[data-tab=memories]').click();drawers();before_api=calls.copy()
-  page.locator('[data-action=keyword-health]').click();page.locator('.smm-keywords [data-generate]').click()
+  page.evaluate('(()=>{const ms=window.SillyTavern.getContext().chatMetadata.st_memory_manager.memories;if(!ms.some(m=>m.kind==="long")&&ms.length)ms[0].kind="long"})()');page.locator('[data-action=keyword-health]').click();page.locator('.smm-keywords [data-generate]').click()
   page.wait_for_function('document.querySelector(".smm-keywords [role=alert]")?.textContent.includes("已补候选")')
   assert page.locator('.smm-keywords textarea').first.input_value()
   assert calls==before_api

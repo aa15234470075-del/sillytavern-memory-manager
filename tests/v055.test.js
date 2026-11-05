@@ -17,7 +17,7 @@ test('actual request builder keeps full materials and repeats selected stage con
   assert.ok(body.task.requirements.includes('自定义要求'));
   if(outputMode==='json'){
    const item=JSON.parse(body.outputContract.example).memories[0];
-   assert.equal(Object.hasOwn(item,'brief'),level>1);assert.equal(Object.hasOwn(item,'keywords'),level>1);
+   assert.equal(Object.hasOwn(item,'brief'),level>1);assert.equal(Object.hasOwn(item,'keywords'),true);
   }
   assert.ok(Object.keys(body).at(-1)==='outputContract');
  }

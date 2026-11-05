@@ -1,7 +1,7 @@
-import {escapeHtml as h} from './core.js?v=0.7.1';
-import {characters,rehearse} from './experience.js?v=0.7.1';
-import {floorLabel} from './memory-tools.js?v=0.7.1';
-import {summaryLevelLabel} from './summary-rules.js?v=0.7.1';
+import {escapeHtml as h} from './core.js?v=0.7.2';
+import {characters,rehearse} from './experience.js?v=0.7.2';
+import {floorLabel} from './memory-tools.js?v=0.7.2';
+import {summaryLevelLabel} from './summary-rules.js?v=0.7.2';
 export function rehearsalDialog(memories,chat,recall,settings){
  const d=document.createElement('dialog');d.className='smm-editor smm-rehearsal';
  d.innerHTML='<header><h3>按楼层预演记忆发送</h3><button data-close aria-label="关闭预演">×</button></header><div class="smm-rehearsal-body"><p>选择实际聊天楼层，计算当前规则会选出哪些记忆。不会调用模型、发送消息或改变触发状态。隐藏楼层不参与关键词匹配；仍计入原始楼层编号。</p><label>起始楼层<input data-start type="number" min="0" max="'+Math.max(0,chat.length-1)+'" value="'+Math.max(0,chat.length-4)+'"></label><label>结束楼层<input data-end type="number" min="0" max="'+Math.max(0,chat.length-1)+'" value="'+Math.max(0,chat.length-1)+'"></label><button data-run>开始预演</button><p role="alert"></p><section data-results></section></div>';

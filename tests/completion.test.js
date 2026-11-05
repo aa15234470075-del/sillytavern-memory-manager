@@ -27,9 +27,9 @@ test('bad quote remains reviewable, never injected as verified quote',()=>{
  const [m]=validateDraft(JSON.stringify({memories:[{summary:'事实',sources:[3],details:{quotes:['真实原话','虚构台词']}}]}),[{floor:3,role:'assistant',text:'他说：真实原话。'}],DEFAULTS);
  assert.equal(m.details.quotes,'真实原话');assert.equal(m.quoteChecks.length,2);assert.equal(m.quoteChecks[1].verified,false);
 });
-test('first-level formats do not request brief or keywords, later levels do',()=>{
+test('all levels request keywords; first level omits brief',()=>{
  const first=summaryPrompt(DEFAULTS,'',1),second=summaryPrompt(DEFAULTS,'',2);
- assert.ok(!first.includes('"brief":'));assert.ok(!first.includes('"keywords":'));
+ assert.ok(!first.includes('"brief":'));assert.ok(first.includes('"keywords":'));
  assert.ok(second.includes('"brief":'));assert.ok(second.includes('"keywords":'));
 });
 test('streaming handles fragmented bytes, usage, truncation and missing finish',async()=>{

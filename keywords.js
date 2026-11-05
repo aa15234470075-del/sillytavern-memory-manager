@@ -1,10 +1,13 @@
-import {escapeHtml as h} from './core.js?v=0.7.1';
-const stop=new Set(['这个','那个','他们','自己','已经','没有','进行','之后','之前','时候','可以','因为','所以','一个','记忆','总结','什么','这样','不是','就是','但是','然后']);
+import {escapeHtml as h} from './core.js?v=0.7.2';
+const stop=new Set(['测试','剧情','内容','条目','角色','动作','事情','对方','两人','众人','一边','开始','继续','发现','表示','说道','告诉','认为','知道','觉得','随后','此时','这里','那里','我们','你们','一些','一次','时候','情况','问题','可能','应该','需要','终于','仍然','这个','那个','他们','自己','已经','没有','进行','之后','之前','时候','可以','因为','所以','一个','记忆','总结','什么','这样','不是','就是','但是','然后']);
 let segmenter;try{segmenter=new Intl.Segmenter('zh',{granularity:'word'});}catch{}
 function addWords(counts,text,weight=1){
- const add=w=>{if(w.length>=2&&w.length<=24&&!stop.has(w)&&!/^[\d\s]+$/.test(w))counts.set(w,(counts.get(w)||0)+weight);};
+ const add=w=>{if(w.length>=2&&w.length<=24&&!stop.has(w)&&!/^记忆\d*$/.test(w)&&!/^[\d\s]+$/.test(w))counts.set(w,(counts.get(w)||0)+weight);};
  if(segmenter){for(const p of segmenter.segment(text))if(p.isWordLike)add(p.segment);}
- else for(const m of text.matchAll(/[\p{L}\p{N}]{2,12}/gu))add(m[0]);
+ else {for(const m of text.matchAll(/[A-Za-z][A-Za-z0-9_-]{1,23}/g))add(m[0]);for(const m of text.matchAll(/[\p{Script=Han}]+/gu)){const run=m[0];if(run.length<=8)add(run);else for(let i=0;i<run.length-1;i++)add(run.slice(i,i+2));}}
+ // Keep explicit named phrases when the dictionary splits Chinese names into single characters.
+ for(const m of text.matchAll(/[《「『“]([^》」』”\n]{2,16})[》」』”]/g))add(m[1]);
+ for(const m of text.matchAll(/(?:^|[，。！？；\s])([赵钱孙李周吴郑王冯陈褚卫蒋沈韩杨朱秦许何吕张曹严华金魏陶姜谢邹苏潘葛范彭鲁韦马苗方任袁柳唐罗薛伍余萧尹姚陆白孟顾林钟徐邵汪田江郭段雷贺倪汤滕殷常黎乔文卢莫程方阿][\p{Script=Han}]{1,2})(?=在|与|和|向|把|将|已|说|交|归|持|离|走|来|去)/gu))add(m[1]);
 }
 const keywordText=m=>[m.title,m.summary,...Object.values(m.details||{})].join(' ');
 const ranked=counts=>[...counts].sort((a,b)=>b[1]-a[1]||b[0].length-a[0].length).slice(0,12).map(([w])=>w);
@@ -16,7 +19,7 @@ export async function localKeywordsAsync(memory,onProgress=()=>{}){
 }
 export function keywordDialog(items,generate,commit,health=null){return new Promise(resolve=>{
  const d=document.createElement('dialog');d.className='smm-editor smm-keywords';let busy=false;
- d.innerHTML='<h3>'+(health?'关键词体检':'补充关键词')+' · '+items.length+'条</h3><p>候选词与体检意见仅供核对，修改后点击保存才会写入。</p><label>补齐方式<select data-method><option value="local">本地脚本（不调用API）</option><option value="api">API一次补齐</option><option value="manual">手动填写</option></select></label><section data-api hidden><label>API连接<select data-connection><option value="summary">总结API</option><option value="check">检查API</option><option value="custom">独立API（OpenAI兼容）</option></select></label><div data-custom hidden><label>地址<input data-url placeholder="https://…/v1"></label><label>密钥<input data-key type="password" autocomplete="off"></label><label>模型<input data-model></label><p>连接默认保存在当前浏览器，不写入日志或导出。</p></div></section><p role="alert" aria-live="polite"></p><button data-generate>提取候选关键词</button>'+items.map(m=>'<label>'+h(m.title)+'<textarea data-keywords="'+h(m.id)+'" rows="2">'+h(health?(m.keywords||[]).join('、'):'')+'</textarea><small data-health="'+h(m.id)+'">'+h(health?.find(x=>x.id===m.id)?.message||'')+'</small></label>').join('')+'<footer><button data-cancel>取消</button><button data-save>保存关键词</button></footer>';
+ d.innerHTML='<h3>'+(health?'关键词体检（仅当前记忆）':'补充关键词')+' · '+items.length+'条</h3><p>脚本只检查当前记忆的关键词质量及匹配，不核对原始楼层。候选词不保证语义准确，核对保存后才写入。</p><label>补齐方式<select data-method><option value="local">本地脚本（不调用API）</option><option value="api">API一次补齐</option><option value="manual">手动填写</option></select></label><section data-api hidden><label>API连接<select data-connection><option value="summary">总结API</option><option value="check">检查API</option><option value="custom">独立API（OpenAI兼容）</option></select></label><div data-custom hidden><label>地址<input data-url placeholder="https://…/v1"></label><label>密钥<input data-key type="password" autocomplete="off"></label><label>模型<input data-model></label><p>连接默认保存在当前浏览器，不写入日志或导出。</p></div></section><p role="alert" aria-live="polite"></p><button data-generate>提取候选关键词</button>'+items.map(m=>'<label>'+h(m.title)+'<textarea data-keywords="'+h(m.id)+'" rows="2">'+h(health?(m.keywords||[]).join('、'):'')+'</textarea><small data-health="'+h(m.id)+'">'+h(health?.find(x=>x.id===m.id)?.message||'')+'</small></label>').join('')+'<footer><button data-cancel>取消</button><button data-save>保存关键词</button></footer>';
  document.body.append(d);try{const saved=JSON.parse(localStorage.getItem('st_memory_manager:keyword-connection')||'null');if(saved){for(const [selector,key] of [['[data-url]','baseUrl'],['[data-key]','key'],['[data-model]','model']])d.querySelector(selector).value=saved[key]||'';}}catch{}const alert=d.querySelector('[role=alert]');const lock=value=>{busy=value;d.querySelectorAll('button').forEach(b=>b.disabled=value);};
  d.querySelector('[data-method]').onchange=e=>d.querySelector('[data-api]').hidden=e.target.value!=='api';
  d.querySelector('[data-connection]').onchange=e=>d.querySelector('[data-custom]').hidden=e.target.value!=='custom';
