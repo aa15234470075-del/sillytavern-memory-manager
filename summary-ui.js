@@ -1,5 +1,5 @@
-import {help} from './ui-help.js?v=0.5.9';
-import {escapeHtml as h} from './core.js?v=0.5.9';
+import {help} from './ui-help.js?v=0.6.0';
+import {escapeHtml as h} from './core.js?v=0.6.0';
 
 const button=(a,t,extra='')=>`<button type="button" data-action="${a}" data-button-level="2" ${extra}>${t}</button>`;
 export function countControls(s){return `<section class="smm-count-controls"><label>记忆条数<select data-count-mode><option value="events" ${s.memoryCountMode==='events'?'selected':''}>按事件拆分</option><option value="time" ${s.memoryCountMode==='time'?'selected':''}>按时间拆分</option><option value="single" ${s.memoryCountMode==='single'?'selected':''}>合成一条</option><option value="count" ${s.memoryCountMode==='count'?'selected':''}>指定条数</option></select></label><label>指定条数<input data-count-value type="text" inputmode="numeric" value="${s.memoryCount||1}"></label><small>批量时对每批生效；详略字数按每条记忆计算。输出不符会提示核对，不丢弃内容。</small></section>`;}

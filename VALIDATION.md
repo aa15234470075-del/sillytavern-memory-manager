@@ -122,3 +122,8 @@
 - Attached log diagnosed: three successful HTTP responses contained Markdown instead of the chosen JSON; one provider returned HTTP400 safety rejection. No live private-story AI call was made; model quality/latency remains unverified.
 - Settings schema stays 2. No GitHub update, no default-preset change, no entry-icon change.
 - Deployment: v0.5.4 backed up; all 27 v0.5.5 files byte-verified. Cloud portrait 390×844 panel sizing/restore passed with an isolated context and test-page splash dismissal. Cloud landscape click verification remained blocked by the host preloader; not counted as passed. Background host resources emitted HTTP404s; no unrelated host changes were made.
+
+
+## v0.6.0
+
+62项Node测试通过；390与1280宽浏览器回归通过，覆盖世界书内容进入请求、连续批量、保存、来源、教程及窗口。新增删除覆盖回退／合并血缘、强提示词长度及未裁剪材料测试。不把模型事实正确率或所有线路结构化输出支持宣称为已验证。

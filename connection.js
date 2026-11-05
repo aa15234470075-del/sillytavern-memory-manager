@@ -1,4 +1,5 @@
-import {readCompletion} from './stream-reader.js?v=0.5.9';
+import {summarySchema} from './output-contract.js?v=0.6.0';
+import {readCompletion} from './stream-reader.js?v=0.6.0';
 export class ApiClient {
  constructor(settings,log,context){this.settings=settings;this.log=log;this.context=context;this.key='';this.controller=null;this.cachedModels=null;}
  cancel(){this.controller?.abort('cancelled');}
@@ -20,6 +21,7 @@ export class ApiClient {
     const base={chat_completion_source:'openai',reverse_proxy:s.baseUrl.replace(/\/+$/,''),proxy_password:key};
     const stream=kind==='summary'?Boolean(s.summaryStream):kind==='check'?Boolean(s.checkStream):kind==='repair'?Boolean(s.repairStream):Boolean(s.stream);
     const body=kind==='models'?base:{...base,messages,model:s.model,stream,temperature:0.2,...(s.outputTokens?{max_tokens:Number(s.outputTokens)}:{})};
+    if(s.structuredOutput&&s.outputMode==='json'&&['summary','repair','check'].includes(kind)){body.json_schema={name:kind==='check'?'memory_review':'memory_summary',strict:true,value:kind==='check'?{type:'object',properties:{issues:{type:'array',items:{type:'object',properties:{id:{type:'string'},message:{type:'string'},suggestion:{type:'string'}},required:['id','message','suggestion'],additionalProperties:false}}},required:['issues'],additionalProperties:false}:summarySchema({...s,summaryLevel:kind==='summary'?JSON.parse(messages.at(-1).content).summaryLevel||1:s.summaryLevel||1})};}
     await this.log('API请求准备',{kind,attempt:attempt+1,model:s.model,stream,at:new Date().toISOString(),characters:JSON.stringify(messages).length});
     if(controller.signal.aborted)throw Error('已取消请求');
     // Refresh only the local Tavern CSRF token. This is not a model retry.

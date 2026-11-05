@@ -1,4 +1,4 @@
-import { NS } from './core.js?v=0.5.9';
+import { NS } from './core.js?v=0.6.0';
 export function context(){return window.SillyTavern?.getContext?.()||window.getContext?.()||{};}
 export function runtime(){const existing=window.__ST_ADAPTER_CORE_INSTANCE__,c=context();if(!c.chat||!c.eventSource)throw Error('当前页面未提供酒馆聊天接口');const eventOn=(...args)=>existing?.capabilities?.eventOn?existing.events.on(...args):context().eventSource.on(...args);const setPrompt=text=>existing?.capabilities?.extensionPrompt?existing.prompt.set(text,NS,1,0):context().setExtensionPrompt(NS,text,1,0,false,0);return {ctx:context,chat:()=>context().chat,events:{on:eventOn},prompt:{set:setPrompt,clear:()=>setPrompt('')},shared:existing};}
 export function chatKey(){const c=context();return [c.groupId?'group:'+c.groupId:'character:'+String(c.characters?.[c.characterId]?.avatar||c.characterId),c.chatId||''].join('::');}
@@ -7,17 +7,17 @@ let database;export async function db(){if(database)return database;database=awa
 export async function record(store,value){const d=await db();return new Promise((resolve,reject)=>{const t=d.transaction(store,'readwrite');t.objectStore(store).put(value);t.oncomplete=resolve;t.onerror=()=>reject(t.error);});}
 export async function records(store){const d=await db();return new Promise((resolve,reject)=>{const q=d.transaction(store).objectStore(store).getAll();q.onsuccess=()=>resolve(q.result);q.onerror=()=>reject(q.error);});}
 export function download(name,value,type='application/json'){const blob=new Blob([typeof value==='string'?value:JSON.stringify(value,null,2)],{type});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),15000);}
-export { ApiClient } from './connection.js?v=0.5.9';
+export { ApiClient } from './connection.js?v=0.6.0';
 export async function nativeHide(start,end,unhide=false){const mod=await import('/scripts/chats.js');if(typeof mod.hideChatMessageRange!=='function')throw Error('当前酒馆缺少原生隐藏接口，记忆已保留，未隐藏楼层');await mod.hideChatMessageRange(start,end,unhide);}
 export async function readWorldBooks(c,mod,selected=[]){
  const char=c.characters?.[c.characterId],avatar=String(char?.avatar||'').replace(/[.][^.]+$/,'');
- const extras=mod.world_info?.charLore?.find(x=>x.name===avatar)?.extraBooks||[];
+ const extras=(mod.world_info?.charLore||[]).filter(x=>[avatar,char?.avatar,char?.name].includes(x.name)).flatMap(x=>x.extraBooks||[]);
  const names=[...new Set([char?.data?.extensions?.world,char?.extensions?.world,...extras].filter(x=>typeof x==='string'&&x.trim()))];
  const books=[];
  for(const name of [...new Set(selected)]){
   if(!names.includes(name))throw Error('世界书不属于当前角色绑定：'+name+'。请重新读取绑定列表并选择');
-  const data=await mod.loadWorldInfo(name);if(!data||!data.entries)throw Error('无法读取世界书内容：'+name+'。未把读取失败当作空资料发送');
-  const entries=Object.values(data.entries).filter(e=>e&&!e.disable&&typeof e.content==='string'&&e.content.trim()).map(e=>({id:e.uid,text:e.content,keys:e.key||[]}));
+  const data=await mod.loadWorldInfo(name);if(!data||(!data.entries&&!data.character_book?.entries))throw Error('无法读取世界书内容：'+name+'。未把读取失败当作空资料发送');
+  const entries=Object.values(data.entries||data.character_book.entries).filter(e=>e&&!e.disable&&e.enabled!==false&&typeof e.content==='string'&&e.content.trim()).map(e=>({id:e.uid,text:e.content,keys:e.key||[]}));
   books.push({name,entries});
  }
  return {names,books};
