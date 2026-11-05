@@ -1,4 +1,4 @@
-import {summaryPrompt,outputFormat} from './core.js?v=0.6.0';
+import {summaryPrompt,outputFormat} from './core.js?v=0.6.1';
 
 // This same builder is used by request preview and the actual request.
 export function buildSummaryMessages(s,sources,refs,temporary='',parents=false,level=1){

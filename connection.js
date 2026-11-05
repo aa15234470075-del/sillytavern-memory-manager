@@ -1,5 +1,5 @@
-import {summarySchema} from './output-contract.js?v=0.6.0';
-import {readCompletion} from './stream-reader.js?v=0.6.0';
+import {summarySchema} from './output-contract.js?v=0.6.1';
+import {readCompletion} from './stream-reader.js?v=0.6.1';
 export class ApiClient {
  constructor(settings,log,context){this.settings=settings;this.log=log;this.context=context;this.key='';this.controller=null;this.cachedModels=null;}
  cancel(){this.controller?.abort('cancelled');}

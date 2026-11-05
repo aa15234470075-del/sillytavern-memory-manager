@@ -1,23 +1,23 @@
-import {reconcileCoverage,rewindStarts} from './coverage.js?v=0.6.0';
-import {saveSession,loadSession,nextFloor,coveredFloors,automaticStart,countInstruction} from './session-state.js?v=0.6.0';
-import {defaultProfileOptions,DEFAULT_PROFILE_ID} from './default-settings.js?v=0.6.0';
-import {keywordDialog} from './keywords.js?v=0.6.0';
-import {updatePlugin} from './updater.js?v=0.6.0';
-import {startTour} from './tour.js?v=0.6.0';
-import {help} from './ui-help.js?v=0.6.0';
-import {buildSummaryMessages} from './summary-request.js?v=0.6.0';
-import {summaryLevelLabel,automaticMerge} from './summary-rules.js?v=0.6.0';
-import {appearanceCss,readAppearance,normalizeAppearance,fontCss} from './appearance.js?v=0.6.0';
-import {manualMemoryDialog} from './manual-memory.js?v=0.6.0';
-import {floorLabel,hideFloors,pendingHideFloors,textDialog,compareMemories,quoteChecks,normalizeIssues} from './memory-tools.js?v=0.6.0';
-import {repairMessages,checkRepairMessages} from './formats.js?v=0.6.0';
-import {requestBreakdown,usageView,requestView} from './request-view.js?v=0.6.0';
-import {summaryView,sourceView,countControls} from './summary-ui.js?v=0.6.0';
-import {createProgress} from './progress.js?v=0.6.0';
-import {bindPanelMovement} from './panel.js?v=0.6.0';
-import {settingsView as renderSettings} from './settings-ui.js?v=0.6.0';
-import {NS,VERSION,FIELDS,DEFAULTS,newStore,escapeHtml as h,sourceSnapshot,validateDraft,parseJson,eligibleRange,selectMemories,buildInjection,summaryPrompt,priorityInstruction,outputFormat,presetEntries} from './core.js?v=0.6.0';
-import {context,runtime,chatKey,characterKey,record,records,deleteRecords,download,ApiClient,nativeHide,worldBooks,isMainGenerating} from './runtime.js?v=0.6.0';
+import {reconcileCoverage,rewindStarts} from './coverage.js?v=0.6.1';
+import {saveSession,loadSession,nextFloor,coveredFloors,automaticStart,countInstruction} from './session-state.js?v=0.6.1';
+import {defaultProfileOptions,DEFAULT_PROFILE_ID} from './default-settings.js?v=0.6.1';
+import {keywordDialog} from './keywords.js?v=0.6.1';
+import {updatePlugin} from './updater.js?v=0.6.1';
+import {startTour} from './tour.js?v=0.6.1';
+import {help} from './ui-help.js?v=0.6.1';
+import {buildSummaryMessages} from './summary-request.js?v=0.6.1';
+import {summaryLevelLabel,automaticMerge} from './summary-rules.js?v=0.6.1';
+import {appearanceCss,readAppearance,normalizeAppearance,fontCss} from './appearance.js?v=0.6.1';
+import {manualMemoryDialog} from './manual-memory.js?v=0.6.1';
+import {floorLabel,hideFloors,pendingHideFloors,textDialog,compareMemories,quoteChecks,normalizeIssues} from './memory-tools.js?v=0.6.1';
+import {repairMessages,checkRepairMessages} from './formats.js?v=0.6.1';
+import {requestBreakdown,usageView,requestView} from './request-view.js?v=0.6.1';
+import {summaryView,sourceView,countControls} from './summary-ui.js?v=0.6.1';
+import {createProgress} from './progress.js?v=0.6.1';
+import {bindPanelMovement} from './panel.js?v=0.6.1';
+import {settingsView as renderSettings} from './settings-ui.js?v=0.6.1';
+import {NS,VERSION,FIELDS,DEFAULTS,newStore,escapeHtml as h,sourceSnapshot,validateDraft,parseJson,eligibleRange,selectMemories,buildInjection,summaryPrompt,priorityInstruction,outputFormat,presetEntries} from './core.js?v=0.6.1';
+import {context,runtime,chatKey,characterKey,record,records,deleteRecords,download,ApiClient,nativeHide,worldBooks,isMainGenerating} from './runtime.js?v=0.6.1';
 
 async function initializeMemoryManager(){
 // 按范围总结剧情，编辑确认后保存；支持关键词记忆、角色共享、原生隐藏及完整调用日志。
